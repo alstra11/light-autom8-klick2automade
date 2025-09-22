@@ -364,15 +364,26 @@
 
     <!-- Bewertungs-Popup -->
     <div id="ratingPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
-        <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px;">
-            <h3 id="popupTitle">FAQ bewerten</h3>
-            <p id="popupSubtitle" style="margin: 20px 0; display: none;">Wie hilfreich war die Antwort?</p>
-            <div style="display: flex; flex-direction: column; align-items: center; height: 300px; justify-content: space-between;">
-                <span id="step1">Super gut, alles wurde beantwortet (5)</span>
-                <input type="range" id="ratingSlider" min="1" max="5" value="3" orient="vertical" style="height: 200px; width: 50px; transform: rotate(180deg);">
-                <span id="step2">Ich habe immer noch Fragen (1)</span>
+        <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%;">
+            <div id="breadcrumbs" style="margin-bottom: 20px; font-size: 14px; color: #666;">
+                <span id="step1" style="color: #999;">Schritt 1: FAQ bewerten</span> &gt; 
+                <span id="step2" style="display: none; color: #333;">Schritt 2: Frage stellen</span>
             </div>
-            <button class="btn" id="submitButton" onclick="submitRating()" style="margin-top: 20px;">Absenden</button>
+            <h3 id="popupTitle">FAQ bewerten</h3>
+            <p id="popupSubtitle" style="margin: 20px 0;">Wie hilfreich war die Antwort?</p>
+            
+            <div id="step1Content" style="display: flex; flex-direction: column; align-items: center; height: 400px; justify-content: space-between;">
+                <span>😍 Super gut, alles wurde beantwortet (5)</span>
+                <input type="range" id="ratingSlider" min="1" max="5" value="3" step="1" orient="vertical" style="height: 300px; width: 80px; transform: rotate(180deg);">
+                <span id="questionsLink" style="cursor: pointer; color: blue; text-decoration: underline;" onclick="switchToStep2()">🤔 Ich habe immer noch Fragen (1)</span>
+            </div>
+            
+            <div id="step2Content" style="display: none; text-align: left;">
+                <textarea id="followUpQuestion" placeholder="Stelle deine weitere Frage hier..." style="width: 100%; height: 100px; margin-bottom: 15px;"></textarea>
+                <button class="btn" onclick="submitFollowUpQuestion()" style="margin-top: 10px;">Frage absenden</button>
+            </div>
+            
+            <button id="submitButton" class="btn" onclick="submitRating()" style="margin-top: 20px;">Absenden</button>
         </div>
     </div>
 
@@ -680,8 +691,9 @@
                 alert('Bitte eine Frage eingeben!');
                 return;
             }
-            // Sende die Frage (ähnlich wie askQuestion)
-            await askQuestion(question, true);
+            // Setze die Frage in das Input-Feld und sende sie
+            document.getElementById('questionInput').value = question;
+            await askQuestion(true);
             document.getElementById('ratingPopup').style.display = 'none';
         }
         
