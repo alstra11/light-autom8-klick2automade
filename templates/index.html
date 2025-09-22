@@ -353,6 +353,15 @@
         </div>
     </div>
     
+    <!-- Info-Popup -->
+    <div id="infoPopup">
+        <div id="infoPopupContent">
+            <h3>Erklärung</h3>
+            <p id="infoText"></p>
+            <button class="btn" onclick="closeInfoPopup()">Schließen</button>
+        </div>
+    </div>
+
     <!-- Bewertungs-Popup -->
     <div id="ratingPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
         <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px;">
@@ -645,6 +654,24 @@
             console.log('Bewertung abgesendet: ' + rating);
             alert('Vielen Dank für deine Bewertung: ' + rating);
             document.getElementById('ratingPopup').style.display = 'none';
+        }
+        
+        function showInfo(type) {
+            const infoText = document.getElementById('infoText');
+            let text = '';
+            if (type === 'create') {
+                text = 'Ein Vector Store ist eine Sammlung von Vektoren, die für KI-gestützte Suchen verwendet werden. Hier können Sie einen neuen Store mit einem Namen erstellen.';
+            } else if (type === 'upload') {
+                text = 'Laden Sie Dateien in einen bestehenden Vector Store hoch, um Inhalte für den Assistenten bereitzustellen. Geben Sie ID, Namen und Inhalt an.';
+            } else if (type === 'manage') {
+                text = 'Verwalten Sie Ihre Vector Stores: Laden, anzeigen und aktualisieren Sie bestehende Stores.';
+            }
+            infoText.innerHTML = text;
+            document.getElementById('infoPopup').style.display = 'flex';
+        }
+
+        function closeInfoPopup() {
+            document.getElementById('infoPopup').style.display = 'none';
         }
 
         async function submitFollowUpQuestion() {

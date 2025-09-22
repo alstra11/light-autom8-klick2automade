@@ -24,6 +24,13 @@
 - Fallback-Fragen hinzugefügt, falls Generierung fehlschlägt
 - Sicherstellung, dass immer 3 Follow-Ups angezeigt werden
 
+## CP-010 [23.09.2025 - 00:09]
+- Info-Icons (ℹ️) zu allen Section-Überschriften hinzugefügt für bessere Benutzerführung
+- Interaktives Popup-System mit erklärenden Texten implementiert
+- CSS-Styling für Info-Icons und Popup-Modal erstellt mit Hover-Effekten
+- JavaScript-Funktionen showInfo() und closeInfoPopup() für Popup-Steuerung entwickelt
+- Deutsche Erklärungstexte für Vector Store-Funktionen definiert und integriert
+
 ## CP-010 [23.09.2025 - 00:01]
 - Git-Repository initialisiert, da keines vorhanden war
 - .gitignore-Datei erstellt, um sensible Dateien wie .env zu ignorieren
