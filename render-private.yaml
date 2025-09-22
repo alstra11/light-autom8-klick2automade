@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: light-autom8-private
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 8000
+    healthCheckPath: /
+    autoDeploy: true
+    branch: main

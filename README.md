@@ -2,6 +2,13 @@
 
 Ein modernes Web-Interface für die Verwaltung von OpenAI Vector Stores, entwickelt für Klick2Automade.
 
+## 🔒 Private Deployment
+
+Dieses Repository ist für privates Deployment konfiguriert und enthält:
+- Sichere API Key Verwaltung über Umgebungsvariablen
+- Render.com Deployment-Konfiguration
+- Private GitHub Repository Integration
+
 ## 🌐 Live Demo
 
 **🚀 [https://light-autom8-klick2automade.onrender.com](https://light-autom8-klick2automade.onrender.com)**
