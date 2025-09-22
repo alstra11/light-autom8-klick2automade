@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Management - Light Autom8</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .nav a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .todo-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .add-todo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .add-todo h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .todo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        .todo-list {
+            margin-top: 30px;
+        }
+
+        .todo-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .todo-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .todo-item.completed {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.8;
+        }
+
+        .todo-item.high-priority {
+            border-left: 4px solid #dc3545;
+        }
+
+        .todo-item.medium-priority {
+            border-left: 4px solid #ffc107;
+        }
+
+        .todo-item.low-priority {
+            border-left: 4px solid #28a745;
+        }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .todo-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .todo-priority {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: #dc3545;
+            color: white;
+        }
+
+        .priority-medium {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .priority-low {
+            background: #28a745;
+            color: white;
+        }
+
+        .todo-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .todo-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .todo-actions .btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-tab:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        .ai-generator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .ai-generator-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.loading {
+            background-color: #e9ecef;
+            color: #343a40;
+            border: 1px solid #ced4da;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav a {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .todo-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .todo-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Todo Management</h1>
+            <p>Verwalten Sie Ihre Aufgaben und Projekte</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">🏠 Zurück zur Hauptseite</a>
+            <a href="/docu">📚 Dokumentation</a>
+            <a href="#add-todo">Neue Aufgabe</a>
+            <a href="#todo-list">Alle Aufgaben</a>
+        </div>
+
+        <div class="todo-container">
+            <!-- Todo Statistics -->
+            <div class="todo-stats">
+                <div class="stat-card">
+                    <h3 id="total-todos">0</h3>
+                    <p>Gesamt</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="completed-todos">0</h3>
+                    <p>Abgeschlossen</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pending-todos">0</h3>
+                    <p>Ausstehend</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="high-priority-todos">0</h3>
+                    <p>Hohe Priorität</p>
+                </div>
+            </div>
+
+            <!-- Add Todo Form -->
+            <div class="add-todo" id="add-todo">
+                <h3>➕ Neue Aufgabe hinzufügen</h3>
+                <form id="todo-form">
+                    <div class="form-group">
+                        <label for="todo-title">Titel *</label>
+                        <input type="text" id="todo-title" name="title" required placeholder="z.B. Vector Store implementieren">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="todo-description">Beschreibung</label>
+                        <textarea id="todo-description" name="description" placeholder="Detaillierte Beschreibung der Aufgabe..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="todo-priority">Priorität</label>
+                        <select id="todo-priority" name="priority">
+                            <option value="low">Niedrig</option>
+                            <option value="medium" selected>Mittel</option>
+                            <option value="high">Hoch</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="todo-category">Kategorie</label>
+                        <select id="todo-category" name="category">
+                            <option value="development">Entwicklung</option>
+                            <option value="testing">Testing</option>
+                            <option value="documentation">Dokumentation</option>
+                            <option value="deployment">Deployment</option>
+                            <option value="maintenance">Wartung</option>
+                            <option value="other">Sonstiges</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn">✅ Aufgabe hinzufügen</button>
+                    <button type="button" class="btn btn-secondary" onclick="generateSampleTodos()">🎲 Beispiel-Aufgaben generieren</button>
+                    <button type="button" class="btn btn-warning" onclick="showAIGenerator()">🤖 AI Aufgaben Generator</button>
+                </form>
+            </div>
+
+            <!-- AI Generator Modal -->
+            <div id="ai-generator" class="ai-generator" style="display: none;">
+                <div class="ai-generator-content">
+                    <h3>🤖 AI Aufgaben Generator</h3>
+                    <div class="form-group">
+                        <label for="project-description">Projektbeschreibung:</label>
+                        <textarea id="project-description" placeholder="Beschreibe dein Projekt... z.B. 'Website mit Vector Store und AI Integration'"></textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="generateAITodos()">🚀 AI Aufgaben generieren</button>
+                    <button class="btn btn-secondary" onclick="hideAIGenerator()">❌ Abbrechen</button>
+                    <div id="ai-generator-status"></div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-filter="all">Alle</div>
+                <div class="filter-tab" data-filter="pending">Ausstehend</div>
+                <div class="filter-tab" data-filter="completed">Abgeschlossen</div>
+                <div class="filter-tab" data-filter="high">Hohe Priorität</div>
+                <div class="filter-tab" data-filter="development">Entwicklung</div>
+            </div>
+
+            <!-- Todo List -->
+            <div class="todo-list" id="todo-list">
+                <div class="empty-state" id="empty-state">
+                    <h3>Keine Aufgaben gefunden</h3>
+                    <p>Fügen Sie eine neue Aufgabe hinzu oder generieren Sie Beispiel-Aufgaben.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/" class="back-btn">🏠 Zurück zur Hauptseite</a>
+
+    <script>
+        // Todo Management System
+        class TodoManager {
+            constructor() {
+                this.todos = this.loadTodos();
+                this.currentFilter = 'all';
+                this.init();
+            }
+
+            init() {
+                this.renderTodos();
+                this.updateStats();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                // Form submission
+                document.getElementById('todo-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addTodo();
+                });
+
+                // Filter tabs
+                document.querySelectorAll('.filter-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.setFilter(e.target.dataset.filter);
+                    });
+                });
+            }
+
+            addTodo() {
+                const form = document.getElementById('todo-form');
+                const formData = new FormData(form);
+                
+                const todo = {
+                    id: Date.now(),
+                    title: formData.get('title'),
+                    description: formData.get('description'),
+                    priority: formData.get('priority'),
+                    category: formData.get('category'),
+                    completed: false,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                this.todos.unshift(todo);
+                this.saveTodos();
+                this.renderTodos();
+                this.updateStats();
+                form.reset();
+            }
+
+            toggleTodo(id) {
+                const todo = this.todos.find(t => t.id === id);
+                if (todo) {
+                    todo.completed = !todo.completed;
+                    todo.updatedAt = new Date().toISOString();
+                    this.saveTodos();
+                    this.renderTodos();
+                    this.updateStats();
+                }
+            }
+
+            deleteTodo(id) {
+                this.todos = this.todos.filter(t => t.id !== id);
+                this.saveTodos();
+                this.renderTodos();
+                this.updateStats();
+            }
+
+            setFilter(filter) {
+                this.currentFilter = filter;
+                document.querySelectorAll('.filter-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+                this.renderTodos();
+            }
+
+            getFilteredTodos() {
+                switch (this.currentFilter) {
+                    case 'pending':
+                        return this.todos.filter(t => !t.completed);
+                    case 'completed':
+                        return this.todos.filter(t => t.completed);
+                    case 'high':
+                        return this.todos.filter(t => t.priority === 'high');
+                    case 'development':
+                        return this.todos.filter(t => t.category === 'development');
+                    default:
+                        return this.todos;
+                }
+            }
+
+            renderTodos() {
+                const container = document.getElementById('todo-list');
+                const filteredTodos = this.getFilteredTodos();
+                const emptyState = document.getElementById('empty-state');
+
+                if (filteredTodos.length === 0) {
+                    emptyState.style.display = 'block';
+                    container.innerHTML = '<div id="empty-state" class="empty-state"><h3>Keine Aufgaben gefunden</h3><p>Fügen Sie eine neue Aufgabe hinzu oder ändern Sie den Filter.</p></div>';
+                    return;
+                }
+
+                emptyState.style.display = 'none';
+                container.innerHTML = filteredTodos.map(todo => this.renderTodo(todo)).join('');
+            }
+
+            renderTodo(todo) {
+                const priorityClass = `priority-${todo.priority}`;
+                const completedClass = todo.completed ? 'completed' : '';
+                const priorityBorderClass = `${todo.priority}-priority`;
+
+                return `
+                    <div class="todo-item ${completedClass} ${priorityBorderClass}">
+                        <div class="todo-header">
+                            <div class="todo-title">${todo.title}</div>
+                            <div class="todo-priority ${priorityClass}">${this.getPriorityText(todo.priority)}</div>
+                        </div>
+                        ${todo.description ? `<div class="todo-description">${todo.description}</div>` : ''}
+                        <div class="todo-meta">
+                            <div>
+                                <strong>Kategorie:</strong> ${this.getCategoryText(todo.category)} | 
+                                <strong>Erstellt:</strong> ${new Date(todo.createdAt).toLocaleDateString('de-DE')}
+                            </div>
+                            <div class="todo-actions">
+                                <button class="btn ${todo.completed ? 'btn-warning' : 'btn-success'}" 
+                                        onclick="todoManager.toggleTodo(${todo.id})">
+                                    ${todo.completed ? '↩️ Wiedereröffnen' : '✅ Abschließen'}
+                                </button>
+                                <button class="btn btn-danger" onclick="todoManager.deleteTodo(${todo.id})">
+                                    🗑️ Löschen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            getPriorityText(priority) {
+                const priorities = {
+                    'high': 'Hoch',
+                    'medium': 'Mittel',
+                    'low': 'Niedrig'
+                };
+                return priorities[priority] || priority;
+            }
+
+            getCategoryText(category) {
+                const categories = {
+                    'development': 'Entwicklung',
+                    'testing': 'Testing',
+                    'documentation': 'Dokumentation',
+                    'deployment': 'Deployment',
+                    'maintenance': 'Wartung',
+                    'other': 'Sonstiges'
+                };
+                return categories[category] || category;
+            }
+
+            updateStats() {
+                const total = this.todos.length;
+                const completed = this.todos.filter(t => t.completed).length;
+                const pending = total - completed;
+                const highPriority = this.todos.filter(t => t.priority === 'high' && !t.completed).length;
+
+                document.getElementById('total-todos').textContent = total;
+                document.getElementById('completed-todos').textContent = completed;
+                document.getElementById('pending-todos').textContent = pending;
+                document.getElementById('high-priority-todos').textContent = highPriority;
+            }
+
+            generateSampleTodos() {
+                const sampleTodos = [
+                    {
+                        title: "MCP Server implementieren",
+                        description: "Vollständige Implementierung des Model Context Protocol Servers mit allen Tools und Ressourcen.",
+                        priority: "high",
+                        category: "development"
+                    },
+                    {
+                        title: "API Dokumentation erstellen",
+                        description: "Umfassende Dokumentation aller API-Endpunkte und Tools für Entwickler.",
+                        priority: "medium",
+                        category: "documentation"
+                    },
+                    {
+                        title: "Vector Store Testing",
+                        description: "Automatisierte Tests für alle Vector Store Operationen implementieren.",
+                        priority: "medium",
+                        category: "testing"
+                    },
+                    {
+                        title: "Deployment Pipeline",
+                        description: "CI/CD Pipeline für automatisches Deployment auf Netlify einrichten.",
+                        priority: "high",
+                        category: "deployment"
+                    },
+                    {
+                        title: "Performance Optimierung",
+                        description: "Code-Review und Performance-Optimierung der Flask-Anwendung.",
+                        priority: "low",
+                        category: "maintenance"
+                    },
+                    {
+                        title: "Security Audit",
+                        description: "Sicherheitsaudit und Implementierung von Best Practices.",
+                        priority: "high",
+                        category: "maintenance"
+                    }
+                ];
+
+                sampleTodos.forEach(todo => {
+                    const newTodo = {
+                        id: Date.now() + Math.random(),
+                        ...todo,
+                        completed: false,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    this.todos.unshift(newTodo);
+                });
+
+                this.saveTodos();
+                this.renderTodos();
+                this.updateStats();
+            }
+
+            saveTodos() {
+                localStorage.setItem('todos', JSON.stringify(this.todos));
+            }
+
+            loadTodos() {
+                const saved = localStorage.getItem('todos');
+                return saved ? JSON.parse(saved) : [];
+            }
+        }
+
+        // Initialize Todo Manager
+        const todoManager = new TodoManager();
+
+        // Global function for sample todos
+        function generateSampleTodos() {
+            todoManager.generateSampleTodos();
+        }
+
+        // AI Generator Functions
+        function showAIGenerator() {
+            document.getElementById('ai-generator').style.display = 'flex';
+        }
+
+        function hideAIGenerator() {
+            document.getElementById('ai-generator').style.display = 'none';
+        }
+
+        async function generateAITodos() {
+            const description = document.getElementById('project-description').value;
+            const statusDiv = document.getElementById('ai-generator-status');
+            
+            if (!description) {
+                statusDiv.innerHTML = '<div class="status error">Bitte gib eine Projektbeschreibung ein.</div>';
+                return;
+            }
+            
+            statusDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>🤖 AI generiert intelligente Aufgaben...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/generate-todos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        description: description
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Füge die AI-generierten Todos hinzu
+                    data.todos.forEach(todo => {
+                        const newTodo = {
+                            id: Date.now() + Math.random(),
+                            title: todo.title,
+                            description: todo.description,
+                            priority: todo.priority,
+                            category: todo.category,
+                            completed: false,
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        };
+                        todoManager.todos.unshift(newTodo);
+                    });
+                    
+                    todoManager.saveTodos();
+                    todoManager.renderTodos();
+                    todoManager.updateStats();
+                    
+                    statusDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ ${data.todos.length} AI-generierte Aufgaben hinzugefügt!
+                        </div>
+                    `;
+                    
+                    // Schließe den Generator nach 2 Sekunden
+                    setTimeout(() => {
+                        hideAIGenerator();
+                        document.getElementById('project-description').value = '';
+                    }, 2000);
+                    
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">Fehler: ${data.error}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">Fehler: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

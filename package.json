@@ -1,0 +1,20 @@
+{
+  "name": "light-autom8-vector-store",
+  "version": "1.0.0",
+  "description": "OpenAI Vector Store Management System für Klick2Automade",
+  "main": "app.py",
+  "scripts": {
+    "start": "python app.py",
+    "dev": "python -m http.server 8000",
+    "deploy": "netlify deploy --prod",
+    "deploy-draft": "netlify deploy"
+  },
+  "keywords": ["openai", "vector-store", "ai", "automation"],
+  "author": "Klick2Automade",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^1.0.0",
+    "flask": "^3.0.0",
+    "python-dotenv": "^1.0.0"
+  }
+}

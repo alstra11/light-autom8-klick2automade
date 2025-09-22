@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light-Autom8 Vector Store Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .nav a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            background: #fafafa;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            height: 200px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .vector-stores {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .vector-store-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .vector-store-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .vector-store-item p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Light-Autom8</h1>
+            <p>OpenAI Vector Store Management System</p>
+            
+            <div class="nav">
+                <a href="/docu">📚 Dokumentation</a>
+                <a href="/todo">📝 Todo Management</a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Vector Store Creation Section -->
+            <div class="section">
+                <h2>Vector Store erstellen</h2>
+                <div class="form-group">
+                    <label for="storeName">Vector Store Name:</label>
+                    <input type="text" id="storeName" value="Support FAQ" placeholder="Geben Sie einen Namen ein...">
+                </div>
+                <button class="btn" onclick="createVectorStore()">Vector Store erstellen</button>
+                <div id="createStatus"></div>
+            </div>
+            
+            <!-- File Upload Section -->
+            <div class="section">
+                <h2>Datei hochladen</h2>
+                <div class="form-group">
+                    <label for="vectorStoreId">Vector Store ID:</label>
+                    <input type="text" id="vectorStoreId" placeholder="Vector Store ID eingeben...">
+                </div>
+                <div class="form-group">
+                    <label for="fileName">Dateiname:</label>
+                    <input type="text" id="fileName" value="customer_policies.txt" placeholder="Dateiname...">
+                </div>
+                <div class="form-group">
+                    <label for="fileContent">Dateiinhalt:</label>
+                    <textarea id="fileContent" placeholder="Geben Sie den Dateiinhalt ein..."></textarea>
+                </div>
+                <button class="btn btn-success" onclick="uploadFile()">Datei hochladen</button>
+                <div id="uploadStatus"></div>
+            </div>
+            
+            <!-- Vector Stores List Section -->
+            <div class="section">
+                <h2>Vector Stores verwalten</h2>
+                <button class="btn btn-secondary" onclick="loadVectorStores()">Vector Stores laden</button>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Lade Vector Stores...</p>
+                </div>
+                <div id="vectorStoresList"></div>
+            </div>
+            
+            <!--  INTELLIGENTER ASSISTENT SECTION -->
+            <div class="section">
+                <h2>🤖 Intelligenter Assistent</h2>
+                <p style="margin-bottom: 20px; color: #666;">Stelle Fragen zu deinen Kundenrichtlinien und bekomme sofortige Antworten!</p>
+                
+                <div class="form-group">
+                    <label for="questionInput">Deine Frage:</label>
+                    <input type="text" id="questionInput" placeholder="z.B. Wie lange dauert die Gewährleistung?" style="height: 50px; font-size: 16px;">
+                </div>
+                
+                <button class="btn btn-success" onclick="askQuestion(false)" style="width: 100%; margin-bottom: 20px;">
+                    🚀 Frage stellen
+                </button>
+                
+                <div id="questionStatus"></div>
+                
+                <!-- Beispiel-Fragen -->
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <h4 style="color: #333; margin-bottom: 15px;"> Beispiel-Fragen zum Ausprobieren:</h4>
+                    <div style="display: grid; gap: 10px;">
+                        <button class="btn btn-secondary" onclick="setQuestion('Wie lange dauert die Gewährleistung?')" style="text-align: left; justify-content: flex-start;">
+                            ⏰ Wie lange dauert die Gewährleistung?
+                        </button>
+                        <button class="btn btn-secondary" onclick="setQuestion('Was kostet ein Projekt?')" style="text-align: left; justify-content: flex-start;">
+                            💰 Was kostet ein Projekt?
+                        </button>
+                        <button class="btn btn-secondary" onclick="setQuestion('Wann ist Support verfügbar?')" style="text-align: left; justify-content: flex-start;">
+                             Wann ist Support verfügbar?
+                        </button>
+                        <button class="btn btn-secondary" onclick="setQuestion('Wie lange dauert ein Projekt?')" style="text-align: left; justify-content: flex-start;">
+                            📅 Wie lange dauert ein Projekt?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bewertungs-Popup -->
+    <div id="ratingPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px;">
+            <h3>FAQ bewerten</h3>
+            <p style="margin: 20px 0;">Wie hilfreich war die Antwort?</p>
+            <div style="display: flex; flex-direction: column; align-items: center; height: 300px; justify-content: space-between;">
+                <span>Super gut, alles wurde beantwortet (5)</span>
+                <input type="range" id="ratingSlider" min="1" max="5" value="3" orient="vertical" style="height: 200px; width: 50px; transform: rotate(180deg);">
+                <span>Ich habe immer noch Fragen (1)</span>
+            </div>
+            <button class="btn" onclick="submitRating()" style="margin-top: 20px;">Absenden</button>
+        </div>
+    </div>
+
+    <script>
+        async function createVectorStore() {
+            const storeName = document.getElementById('storeName').value;
+            const statusDiv = document.getElementById('createStatus');
+            
+            if (!storeName) {
+                statusDiv.innerHTML = '<div class="status error">Bitte geben Sie einen Namen ein.</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/create-vector-store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: storeName })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusDiv.innerHTML = `
+                        <div class="status success">
+                            Vector Store erfolgreich erstellt!<br>
+                            ID: ${data.vector_store_id}<br>
+                            Name: ${data.name}<br>
+                            Status: ${data.status}
+                        </div>
+                    `;
+                    // Auto-fill the vector store ID for file upload
+                    document.getElementById('vectorStoreId').value = data.vector_store_id;
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">Fehler: ${data.error}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">Fehler: ${error.message}</div>`;
+            }
+        }
+        
+        async function uploadFile() {
+            const vectorStoreId = document.getElementById('vectorStoreId').value;
+            const fileName = document.getElementById('fileName').value;
+            const fileContent = document.getElementById('fileContent').value;
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            if (!vectorStoreId || !fileName || !fileContent) {
+                statusDiv.innerHTML = '<div class="status error">Bitte füllen Sie alle Felder aus.</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/upload-file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        vector_store_id: vectorStoreId,
+                        file_name: fileName,
+                        file_content: fileContent
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusDiv.innerHTML = `
+                        <div class="status success">
+                            Datei erfolgreich hochgeladen!<br>
+                            File ID: ${data.file_id}<br>
+                            Status: ${data.status}
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">Fehler: ${data.error}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">Fehler: ${error.message}</div>`;
+            }
+        }
+        
+        async function loadVectorStores() {
+            const loadingDiv = document.getElementById('loading');
+            const listDiv = document.getElementById('vectorStoresList');
+            
+            loadingDiv.style.display = 'block';
+            listDiv.innerHTML = '';
+            
+            try {
+                const response = await fetch('/list-vector-stores');
+                const data = await response.json();
+                
+                loadingDiv.style.display = 'none';
+                
+                if (data.success) {
+                    if (data.vector_stores.length === 0) {
+                        listDiv.innerHTML = '<p>Keine Vector Stores gefunden.</p>';
+                    } else {
+                        listDiv.innerHTML = '<div class="vector-stores">';
+                        data.vector_stores.forEach(store => {
+                            listDiv.innerHTML += `
+                                <div class="vector-store-item">
+                                    <h3>${store.name}</h3>
+                                    <p><strong>ID:</strong> ${store.id}</p>
+                                    <p><strong>Status:</strong> ${store.status}</p>
+                                    <p><strong>Erstellt:</strong> ${new Date(store.created_at * 1000).toLocaleString('de-DE')}</p>
+                                </div>
+                            `;
+                        });
+                        listDiv.innerHTML += '</div>';
+                    }
+                } else {
+                    listDiv.innerHTML = `<div class="status error">Fehler: ${data.error}</div>`;
+                }
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                listDiv.innerHTML = `<div class="status error">Fehler: ${error.message}</div>`;
+            }
+        }
+        
+        let currentQuestion = '';
+        let currentAnswer = '';
+        let isFollowUp = false;
+        
+        function setQuestion(question) {
+            document.getElementById('questionInput').value = question;
+        }
+        
+        async function askQuestion(followUp = false) {
+            const questionInput = document.getElementById('questionInput');
+            const question = questionInput.value;
+            const statusDiv = document.getElementById('questionStatus');
+            
+            if (!question) {
+                statusDiv.innerHTML = '<div class="status error">Bitte geben Sie eine Frage ein.</div>';
+                return;
+            }
+            
+            // Zeige Loading
+            let loadingText = '🤖 Der Assistent denkt nach...';
+            if (followUp) {
+                loadingText = '💬 Das ist eine gute Frage! Mal sehen, ob ich es dir erklären kann.';
+            }
+            statusDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>${loadingText}</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/ask-question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        vector_store_id: document.getElementById('vectorStoreId').value || 'vs_68d1bff6e0c08191b1f798578de9b925'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentQuestion = question;
+                    currentAnswer = data.answer;
+                    isFollowUp = followUp;
+                    
+                    let extraButtons = '';
+                    if (!followUp) {
+                        extraButtons = '<button class="btn btn-secondary" onclick="showFollowUps()" style="margin-top: 15px;">Folgefrage stellen</button>';
+                    } else {
+                        extraButtons = '<button class="btn btn-secondary" onclick="showRatingPopup()" style="margin-top: 15px;">FAQ bewerten</button>';
+                    }
+                    
+                    statusDiv.innerHTML = `
+                        <div class="status success" style="text-align: left;">
+                            <h4>🤖 Antwort:</h4>
+                            <p style="margin-top: 10px; line-height: 1.6;">${data.answer}</p>
+                            <hr style="margin: 15px 0; border: 1px solid #ddd;">
+                            <small style="color: #666;">
+                                <strong>Quelle:</strong> ${data.source || 'Kundenrichtlinien'} | 
+                                <strong>Vertrauen:</strong> ${Math.round(data.confidence * 100)}%
+                            </small>
+                            ${extraButtons}
+                        </div>
+                        <div id="followUpQuestions" style="display: none; margin-top: 20px;"></div>
+                    `;
+                    
+                    questionInput.value = '';
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">Fehler: ${data.error}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">Fehler: ${error.message}</div>`;
+            }
+        }
+        
+        async function showFollowUps() {
+            const followUpDiv = document.getElementById('followUpQuestions');
+            followUpDiv.style.display = 'block';
+            followUpDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generiere Follow-Up-Fragen...</p></div>';
+            
+            try {
+                const response = await fetch('/generate-followups', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        original_question: currentQuestion,
+                        original_answer: currentAnswer
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.followups.length > 0) {
+                    followUpDiv.innerHTML = '<h4>Vorgeschlagene Folgefragen:</h4>';
+                    data.followups.forEach((q, index) => {
+                        followUpDiv.innerHTML += `
+                            <button class="btn btn-secondary" onclick="askFollowUp('${q}')" style="margin: 5px; text-align: left; width: 100%;">
+                                ${q}
+                            </button>
+                        `;
+                    });
+                } else {
+                    followUpDiv.innerHTML = '<p>Keine Follow-Up-Fragen verfügbar.</p>';
+                }
+            } catch (error) {
+                followUpDiv.innerHTML = '<p>Fehler beim Generieren von Follow-Ups.</p>';
+            }
+        }
+        
+        function askFollowUp(question) {
+            document.getElementById('questionInput').value = question;
+            askQuestion(true);
+            document.getElementById('followUpQuestions').style.display = 'none';
+        }
+        
+        function showRatingPopup() {
+            document.getElementById('ratingPopup').style.display = 'flex';
+        }
+        
+        function submitRating() {
+            const rating = document.getElementById('ratingSlider').value;
+            // Hier könntest du die Bewertung an den Server senden
+            console.log('Bewertung abgesendet: ' + rating);
+            alert('Vielen Dank für deine Bewertung: ' + rating);
+            document.getElementById('ratingPopup').style.display = 'none';
+        }
+        
+        // Load vector stores on page load
+        window.onload = function() {
+            loadVectorStores();
+        };
+    </script>
+</body>
+</html>

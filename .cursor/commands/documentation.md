@@ -1,0 +1,3 @@
+Whent is type "/documentation" you will be prompted to write a detailed documentation of every api entry-point/end-point and what to expect after each click.. what deliverables are expected and what tool you use (nanobanana, veo3, chatgpt, whisper, transcribe,socialmediafetcher,newsletter_gpt)
+
+Make this availbale as a link on the bottom of the site with "/docu" and a page on which all the documentation is written.

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Dokumentation - Light Autom8</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .nav a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            margin: 25px 0 15px 0;
+            font-size: 1.5rem;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .method.get { background: #28a745; color: white; }
+        .method.post { background: #007bff; color: white; }
+        .method.put { background: #ffc107; color: black; }
+        .method.delete { background: #dc3545; color: white; }
+
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .description {
+            margin: 15px 0;
+            color: #666;
+        }
+
+        .parameters {
+            margin: 15px 0;
+        }
+
+        .parameter {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        .parameter-name {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .parameter-type {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .response {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .response h4 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tool-card h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .tool-description {
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .tool-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tool-features li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .tool-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav a {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 API Dokumentation</h1>
+            <p>Light Autom8 - Vector Store Management System</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">🏠 Zurück zur Hauptseite</a>
+            <a href="#vector-stores">Vector Stores</a>
+            <a href="#tools">Tools</a>
+            <a href="#mcp">MCP Server</a>
+        </div>
+
+        <!-- Vector Store APIs -->
+        <div class="section" id="vector-stores">
+            <h2>📚 Vector Store APIs</h2>
+            
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> Vector Store erstellen</h3>
+                <div class="url">/create-vector-store</div>
+                <div class="description">
+                    Erstellt einen neuen Vector Store für die Speicherung und Verwaltung von Dokumenten.
+                </div>
+                
+                <h4>Parameter:</h4>
+                <div class="parameters">
+                    <div class="parameter">
+                        <span class="parameter-name">name</span> 
+                        <span class="parameter-type">(string, optional)</span><br>
+                        Name des Vector Stores. Standard: "Support FAQ"
+                    </div>
+                </div>
+
+                <h4>Request Body:</h4>
+                <div class="code">
+{
+  "name": "Support FAQ"
+}
+                </div>
+
+                <h4>Response:</h4>
+                <div class="response">
+                    <h4>Erfolg (200):</h4>
+                    <div class="code">
+{
+  "success": true,
+  "vector_store_id": "vs_abc123",
+  "name": "Support FAQ",
+  "status": "ready"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> Datei hochladen</h3>
+                <div class="url">/upload-file</div>
+                <div class="description">
+                    Lädt eine Datei in einen bestehenden Vector Store hoch.
+                </div>
+                
+                <h4>Parameter:</h4>
+                <div class="parameters">
+                    <div class="parameter">
+                        <span class="parameter-name">vector_store_id</span> 
+                        <span class="parameter-type">(string, required)</span><br>
+                        ID des Vector Stores
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">file_content</span> 
+                        <span class="parameter-type">(string, required)</span><br>
+                        Inhalt der hochzuladenden Datei
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">file_name</span> 
+                        <span class="parameter-type">(string, optional)</span><br>
+                        Name der Datei. Standard: "customer_policies.txt"
+                    </div>
+                </div>
+
+                <h4>Request Body:</h4>
+                <div class="code">
+{
+  "vector_store_id": "vs_abc123",
+  "file_content": "Inhalt der Datei...",
+  "file_name": "customer_policies.txt"
+}
+                </div>
+
+                <h4>Response:</h4>
+                <div class="response">
+                    <h4>Erfolg (200):</h4>
+                    <div class="code">
+{
+  "success": true,
+  "file_id": "file_xyz789",
+  "status": "uploaded"
+}
+                    </div>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> Vector Stores auflisten</h3>
+                <div class="url">/list-vector-stores</div>
+                <div class="description">
+                    Listet alle verfügbaren Vector Stores auf.
+                </div>
+
+                <h4>Response:</h4>
+                <div class="response">
+                    <h4>Erfolg (200):</h4>
+                    <div class="code">
+{
+  "success": true,
+  "vector_stores": [
+    {
+      "id": "vs_abc123",
+      "name": "Support FAQ",
+      "status": "ready",
+      "created_at": "2024-09-22T23:20:00Z"
+    }
+  ]
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tools Section -->
+        <div class="section" id="tools">
+            <h2>🛠️ Verfügbare Tools</h2>
+            
+            <div class="tool-card">
+                <h3>🤖 ChatGPT Integration</h3>
+                <div class="tool-description">
+                    Künstliche Intelligenz für Textverarbeitung, Übersetzung und Analyse.
+                </div>
+                <ul class="tool-features">
+                    <li>Natürliche Sprachverarbeitung</li>
+                    <li>Textübersetzung in 50+ Sprachen</li>
+                    <li>Code-Generierung und -Analyse</li>
+                    <li>Kreative Schreibhilfe</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <h3>🎥 Veo3 Video Generator</h3>
+                <div class="tool-description">
+                    Erstellt hochwertige Videos aus Textbeschreibungen.
+                </div>
+                <ul class="tool-features">
+                    <li>Text-zu-Video Konvertierung</li>
+                    <li>HD-Qualität Videos</li>
+                    <li>Verschiedene Stile und Formate</li>
+                    <li>Automatische Bearbeitung</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <h3>🍌 NanoBanana Analytics</h3>
+                <div class="tool-description">
+                    Erweiterte Datenanalyse und Visualisierung.
+                </div>
+                <ul class="tool-features">
+                    <li>Echtzeit-Datenanalyse</li>
+                    <li>Interaktive Dashboards</li>
+                    <li>Machine Learning Integration</li>
+                    <li>Custom Reports</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <h3>🎤 Whisper Audio Transcription</h3>
+                <div class="tool-description">
+                    Konvertiert Audio in Text mit hoher Genauigkeit.
+                </div>
+                <ul class="tool-features">
+                    <li>Spracherkennung in 99+ Sprachen</li>
+                    <li>Echtzeit-Transkription</li>
+                    <li>Punktuierung und Formatierung</li>
+                    <li>Batch-Verarbeitung</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <h3>📱 Social Media Fetcher</h3>
+                <div class="tool-description">
+                    Sammelt und analysiert Social Media Inhalte.
+                </div>
+                <ul class="tool-features">
+                    <li>Multi-Platform Support</li>
+                    <li>Hashtag-Tracking</li>
+                    <li>Sentiment-Analyse</li>
+                    <li>Trend-Erkennung</li>
+                </ul>
+            </div>
+
+            <div class="tool-card">
+                <h3>📧 Newsletter GPT</h3>
+                <div class="tool-description">
+                    Erstellt personalisierte Newsletter und E-Mail-Kampagnen.
+                </div>
+                <ul class="tool-features">
+                    <li>Automatische Content-Generierung</li>
+                    <li>Personalization Engine</li>
+                    <li>A/B Testing</li>
+                    <li>Performance Analytics</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MCP Server Section -->
+        <div class="section" id="mcp">
+            <h2>🔌 MCP Server</h2>
+            
+            <div class="description">
+                Der Model Context Protocol (MCP) Server ermöglicht die Kommunikation zwischen verschiedenen AI-Tools und Services.
+            </div>
+
+            <h3>Verfügbare MCP Tools:</h3>
+            
+            <div class="endpoint">
+                <h3>create_vector_store</h3>
+                <div class="description">
+                    Erstellt einen neuen Vector Store über das MCP Protokoll.
+                </div>
+                <div class="code">
+{
+  "name": "create_vector_store",
+  "description": "Erstellt einen neuen Vector Store für OpenAI",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name des Vector Stores"
+      }
+    },
+    "required": ["name"]
+  }
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3>upload_file_to_vector_store</h3>
+                <div class="description">
+                    Lädt eine Datei in einen Vector Store hoch.
+                </div>
+                <div class="code">
+{
+  "name": "upload_file_to_vector_store",
+  "description": "Lädt eine Datei in einen Vector Store hoch",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "vector_store_id": {
+        "type": "string",
+        "description": "ID des Vector Stores"
+      },
+      "file_content": {
+        "type": "string",
+        "description": "Inhalt der Datei"
+      },
+      "file_name": {
+        "type": "string",
+        "description": "Name der Datei"
+      }
+    },
+    "required": ["vector_store_id", "file_content"]
+  }
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3>list_vector_stores</h3>
+                <div class="description">
+                    Listet alle verfügbaren Vector Stores auf.
+                </div>
+                <div class="code">
+{
+  "name": "list_vector_stores",
+  "description": "Listet alle verfügbaren Vector Stores auf",
+  "inputSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}
+                </div>
+            </div>
+        </div>
+
+        <!-- Deliverables Section -->
+        <div class="section">
+            <h2>📋 Erwartete Deliverables</h2>
+            
+            <h3>Nach jedem API-Aufruf erhalten Sie:</h3>
+            <ul>
+                <li><strong>Vector Store Erstellung:</strong> Eindeutige ID, Name, Status und Erstellungszeitstempel</li>
+                <li><strong>Datei-Upload:</strong> Datei-ID, Upload-Status und Verarbeitungsbestätigung</li>
+                <li><strong>Vector Store Liste:</strong> Vollständige Übersicht aller verfügbaren Stores</li>
+                <li><strong>MCP Responses:</strong> JSON-RPC 2.0 konforme Antworten mit strukturierten Daten</li>
+            </ul>
+
+            <h3>Tool-spezifische Outputs:</h3>
+            <ul>
+                <li><strong>ChatGPT:</strong> Generierter Text, Code oder Übersetzungen</li>
+                <li><strong>Veo3:</strong> Video-URLs und Metadaten</li>
+                <li><strong>NanoBanana:</strong> Analysierte Daten und Visualisierungen</li>
+                <li><strong>Whisper:</strong> Transkribierte Texte mit Zeitstempeln</li>
+                <li><strong>Social Media Fetcher:</strong> Gesammelte Posts und Metriken</li>
+                <li><strong>Newsletter GPT:</strong> Generierte Newsletter und Performance-Daten</li>
+            </ul>
+        </div>
+    </div>
+
+    <a href="/" class="back-btn">🏠 Zurück zur Hauptseite</a>
+</body>
+</html>
