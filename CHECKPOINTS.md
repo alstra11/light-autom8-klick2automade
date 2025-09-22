@@ -29,3 +29,9 @@
 - .gitignore-Datei erstellt, um sensible Dateien wie .env zu ignorieren
 - .env-Datei basierend auf env.example erstellt und OpenAI API Key hinterlegt
 - Alle bestehenden Dateien zum Repository hinzugefügt und initialer Commit für CP-010 durchgeführt
+
+## CP-011 [23.09.2025 - 00:06]
+- .env-Datei erstellt, da sie nicht vorhanden war (vorheriger Versuch mit edit_file möglicherweise blockiert)
+- Inhalt der .env-Datei mit OpenAI API Key und Flask-Konfigurationen gesetzt
+- Inhalt der .env-Datei gelesen und für den User angezeigt
+- Checkpoint-Dokumentation aktualisiert und Git-Commit durchgeführt
