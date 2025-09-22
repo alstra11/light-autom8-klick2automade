@@ -49,3 +49,11 @@
 - Hinzugefügt Multi-Step-Logik mit Breadcrumbs: Schritt 1 (FAQ bewerten, sekundär) und Schritt 2 (Frage stellen)
 - Erweitert JavaScript-Funktionen für Step-Management und direkte Handhabung weiterer Fragen im Popup
 - Autosave und Git-Commit für diese Änderungen durchgeführt
+
+## CP-012 [23.09.2025 - 00:15]
+- Deployment-Konfiguration für Online-Hosting hinzugefügt mit Procfile für Heroku/Render.com
+- runtime.txt mit Python 3.11.0 Version definiert für konsistente Deployment-Umgebung
+- render.yaml Konfigurationsdatei für Render.com mit automatischen Build- und Start-Commands erstellt
+- Flask-App für Production-Mode angepasst mit dynamischer Port-Konfiguration und Environment-basierter Debug-Einstellung
+- Umfassende DEPLOYMENT.md Anleitung mit 3 Deployment-Optionen (Render.com, Heroku, Netlify) dokumentiert
+- Umgebungsvariablen-Konfiguration für Production mit detaillierten Setup-Schritten erklärt

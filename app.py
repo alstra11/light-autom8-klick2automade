@@ -14,7 +14,7 @@ app = Flask(__name__)
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Initialize Gemini AI
-genai.configure(api_key='AIzaSyAiIXAoBwoTNlq138bJ5xKaC5oJdEZJEPU')
+genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
 gemini_model = genai.GenerativeModel('gemini-1.5-flash')
 
 @app.route('/')
