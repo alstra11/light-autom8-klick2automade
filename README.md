@@ -2,6 +2,12 @@
 
 Ein modernes Web-Interface für die Verwaltung von OpenAI Vector Stores, entwickelt für Klick2Automade.
 
+## 🌐 Live Demo
+
+**🚀 [https://light-autom8-klick2automade.onrender.com](https://light-autom8-klick2automade.onrender.com)**
+
+Die Anwendung ist live auf Render.com verfügbar und kann sofort getestet werden!
+
 ## Features
 
 - 🚀 **Vector Store Management**: Erstellen und verwalten von Vector Stores
@@ -56,12 +62,29 @@ Ein modernes Web-Interface für die Verwaltung von OpenAI Vector Stores, entwick
 - `POST /upload-file` - Lädt eine Datei in einen Vector Store hoch
 - `GET /list-vector-stores` - Listet alle Vector Stores auf
 
+## 🚀 Deployment
+
+Die Anwendung ist automatisch auf **Render.com** deployed:
+
+- **Live URL**: https://light-autom8-klick2automade.onrender.com
+- **Dashboard**: https://dashboard.render.com/web/srv-d38t6sbipnbc738f9img
+- **Auto-Deploy**: Aktiviert bei Git Push auf `main` Branch
+- **Region**: Frankfurt (EU)
+- **Plan**: Free Tier
+
+### Deployment-Konfiguration
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `gunicorn app:app`
+- **Python Version**: 3.11.0
+- **Runtime**: Python
+
 ## Technologie-Stack
 
 - **Backend**: Python Flask
 - **Frontend**: HTML5, CSS3, JavaScript
-- **AI Integration**: OpenAI API
+- **AI Integration**: OpenAI API, Google Gemini AI
 - **Styling**: Custom CSS mit modernem Design
+- **Deployment**: Render.com mit Gunicorn
 
 ## Lizenz
 
