@@ -57,3 +57,11 @@
 - Flask-App für Production-Mode angepasst mit dynamischer Port-Konfiguration und Environment-basierter Debug-Einstellung
 - Umfassende DEPLOYMENT.md Anleitung mit 3 Deployment-Optionen (Render.com, Heroku, Netlify) dokumentiert
 - Umgebungsvariablen-Konfiguration für Production mit detaillierten Setup-Schritten erklärt
+
+## CP-003 [23.09.2025 - 00:46]
+- Gemini API Key Sicherheitsproblem behoben
+- Hardcoded API Key aus app.py entfernt
+- Umgebungsvariable GEMINI_API_KEY implementiert
+- app.py angepasst um Key sicher aus os.getenv() zu lesen
+- env.example um GEMINI_API_KEY Konfiguration erweitert
+- .env Datei mit sicherem Key-Speicherung erstellt
