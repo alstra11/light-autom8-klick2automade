@@ -71,6 +71,77 @@ def process_lead():
             'error': str(e)
         }), 500
 
+# NEUER N8N ENDPOINT 🚀
+@app.route('/process-lead-n8n', methods=['POST'])
+def process_lead_n8n():
+    try:
+        data = request.get_json()
+        
+        # Log incoming n8n data
+        print(f"n8n Webhook received: {data}")
+        
+        # Extract lead data
+        lead_name = data.get('name', 'Unknown')
+        lead_email = data.get('email', 'No email')
+        lead_source = data.get('source', 'n8n')
+        lead_budget = data.get('budget', 'Not specified')
+        lead_message = data.get('message', '')
+        
+        # Process with AI (using existing Gemini integration)
+        if lead_message:
+            try:
+                # Use Gemini to process the message
+                prompt = f"""
+                Verarbeite diese Lead-Nachricht für Klick2Automade:
+                
+                NAME: {lead_name}
+                EMAIL: {lead_email}
+                NACHRICHT: {lead_message}
+                BUDGET: {lead_budget}
+                
+                Erstelle eine professionelle Antwort und Bewertung des Leads.
+                """
+                
+                ai_response = gemini_model.generate_content(prompt)
+                ai_analysis = ai_response.text
+            except Exception as ai_error:
+                print(f"AI processing error: {ai_error}")
+                ai_analysis = "AI-Verarbeitung fehlgeschlagen"
+        else:
+            ai_analysis = "Keine Nachricht zur Verarbeitung"
+        
+        # Create lead data
+        lead_data = {
+            'name': lead_name,
+            'email': lead_email,
+            'source': lead_source,
+            'budget': lead_budget,
+            'message': lead_message,
+            'ai_analysis': ai_analysis,
+            'timestamp': time.time(),
+            'status': 'processed_by_n8n',
+            'workflow_id': 'n8n-lead-processing'
+        }
+        
+        # Log the processed lead
+        print(f"Processed lead: {lead_data}")
+        
+        return jsonify({
+            'success': True,
+            'message': f'Lead {lead_name} erfolgreich von n8n verarbeitet!',
+            'lead_data': lead_data,
+            'ai_analysis': ai_analysis,
+            'workflow_status': 'completed'
+        })
+        
+    except Exception as e:
+        print(f"n8n webhook error: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'workflow_status': 'failed'
+        }), 500
+
 @app.route('/create-workflow', methods=['POST'])
 def create_workflow():
     try:
