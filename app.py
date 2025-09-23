@@ -29,6 +29,79 @@ def documentation():
 def todo():
     return render_template('todo.html')
 
+@app.route('/freelancer')
+def freelancer():
+    return render_template('freelancer.html')
+
+@app.route('/process-lead', methods=['POST'])
+def process_lead():
+    try:
+        data = request.get_json()
+        lead_name = data.get('name')
+        lead_email = data.get('email')
+        lead_source = data.get('source')
+        lead_budget = data.get('budget')
+        
+        # Hier würde die echte n8n/make.com Integration stehen
+        # Für jetzt simulieren wir es
+        
+        # Simuliere Verarbeitung
+        import time
+        time.sleep(1)  # Simuliere API-Call
+        
+        # Log Lead (könnte in Datenbank gespeichert werden)
+        lead_data = {
+            'name': lead_name,
+            'email': lead_email,
+            'source': lead_source,
+            'budget': lead_budget,
+            'timestamp': time.time(),
+            'status': 'processed'
+        }
+        
+        return jsonify({
+            'success': True,
+            'message': f'Lead {lead_name} erfolgreich verarbeitet!',
+            'lead_data': lead_data
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/create-workflow', methods=['POST'])
+def create_workflow():
+    try:
+        data = request.get_json()
+        workflow_name = data.get('name')
+        workflow_type = data.get('type')
+        workflow_config = data.get('config', {})
+        
+        # Hier würde die echte Workflow-Erstellung stehen
+        # Für jetzt simulieren wir es
+        
+        workflow_data = {
+            'id': f'wf_{int(time.time())}',
+            'name': workflow_name,
+            'type': workflow_type,
+            'config': workflow_config,
+            'status': 'active',
+            'created_at': time.time()
+        }
+        
+        return jsonify({
+            'success': True,
+            'workflow': workflow_data
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/create-vector-store', methods=['POST'])
 def create_vector_store():
     try:
